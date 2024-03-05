@@ -143,7 +143,7 @@
   <main class="px-3">
     <h1>Bienvenido a:</h1>
     <img src="logo_transparent.png" alt="BiblioApp" width="280" height="280">
-    <a class="nav-link fw-bold py-1 px-0 active" aria-current="page" href="#">Es el sistema de control de inventario en la cual se puede gestionar el ingreso del bibliotecario y la gestión de ingresos, retiros y prestamos de libros</a>
+    <a class="nav-link fw-bold py-1 px-0 active" aria-current="page" href="#">Sistema de gestión de prestamos bibliotecarios</a>
       <p class="lead">
       <a href="login/login.php" class="btn btn-lg btn-light fw-bold border-white bg-white">Log in</a>
     </p>
