@@ -16,7 +16,7 @@ if (!isset($_SESSION['username'])) {
     <title>Dashboard</title>
 </head>
 <body>
-    <h2>Bienvenido al Dashboard</h2>
+    <h2>Bienvenido al Dashboard de BiblioApp</h2>
     <p>Funciona</p>
     
     <!-- Botón para cerrar sesión -->
