@@ -1,6 +1,6 @@
 <?php
 session_start();
-
+// include 'db.php';
 $servername = "localhost";
 $username_db = "root";
 $password_db = "";
@@ -29,6 +29,7 @@ if($con->connect_errno > 0){
     $count = mysqli_num_rows($result);
         if($count != 1) {
       echo "<script>alert('Invalid Details. Please try again.')</script>";
+      header("Location: ../login/login.php");  
         } 
         else {
                    $_SESSION['username'] = $username;
