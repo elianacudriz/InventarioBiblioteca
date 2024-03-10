@@ -108,7 +108,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirmar_prestamo']))
     <form method="post">
         <input type="hidden" name="libro_id" value="<?php echo $libro['id']; ?>">
         <input type="hidden" name="prestador_id" value="<?php echo $prestador['id']; ?>">
-        <input type="submit" name="confirmar_prestamo" value="Prestar Libro">
     </form>
 <?php endif; ?>
 
