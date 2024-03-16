@@ -30,7 +30,6 @@ exit; // Asegúrate de detener la ejecución del script después de la redirecci
     } else {
         echo "Error al registrar usuario: " . $conn->error;
     }
-
     // Cerrar la conexión
     $conn->close();
 }
