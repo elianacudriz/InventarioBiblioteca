@@ -8,27 +8,6 @@ if (!isset($_SESSION['username'])) {
 }
 ?>
 
-<!-- <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-</head>
-<body>
-<h1>Libros Disponibles</h1>
-    <ul id="lista-libros"></ul>
-
-    
-
- <form action="logout.php" method="post">
-        <input type="submit" value="Cerrar sesión">
-    </form>
-</body>
-</html> -->
-
-
-
 
 
 <!doctype html>
@@ -134,6 +113,10 @@ if (!isset($_SESSION['username'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="dashboard.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
   </head>
   <body>
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -239,7 +222,7 @@ if (!isset($_SESSION['username'])) {
 </svg>
 
 <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
-  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Company name</a>
+  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="/inventario/index.php">Company name</a>
 
   <ul class="navbar-nav flex-row d-md-none">
     <li class="nav-item text-nowrap">
@@ -270,7 +253,7 @@ if (!isset($_SESSION['username'])) {
         <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="#">
+              <a class="nav-link d-flex align-items-center gap-2 " href="/inventario/dashboard/dashboard.php">
                 <svg class="bi"><use xlink:href="#house-fill"/></svg>
                 Dashboard
               </a>
@@ -282,7 +265,7 @@ if (!isset($_SESSION['username'])) {
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
+              <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="#">
                 <svg class="bi"><use xlink:href="#cart"/></svg>
                 Prestar un libro
               </a>
@@ -340,80 +323,62 @@ if (!isset($_SESSION['username'])) {
       </div>
 
 
-      <h2>Coleccion de libros BiblioApp</h2>
-      <div class="table-responsive small">
-      <table class="table table-striped table-sm">
-      <thead>
-            <tr>
-             
-              <th scope="col">    </th>
-              <th scope="col"></th>
-              <th scope="col"></th></tr>
-
-              <th scope="col"></th>
-          </thead>
-          <tbody >
-    <tr id="search-row">
-        <td><input type="text" id="search-isbn" placeholder="Buscar por ISBN"></td>
-        <td><input type="text" id="search-name" placeholder="Buscar por nombre"></td>
-        <td><input type="text" id="search-author" placeholder="Buscar por autor"></td>
-        <td></td>
-        <!-- Asegúrate de tener la misma cantidad de celdas que en las otras filas -->
-    </tr>
-          </tbody>
-    <!-- El resto de tu tabla -->
-</table>
-        <table class="table table-striped table-sm">
-          <thead>
-            <tr>
-             
-              <th scope="col">ISBN</th>
-              <th scope="col">Nombre</th>
-              <th scope="col">Autor</th>
-              <th scope="col">Disponibles</th>
-              <th scope="col"></th>
-
-            </tr>
-          </thead>
-          <tbody id="tabla-libros"></tbody>
-        </table>
+      <h2>Prestar Libro</h2>
+      <div>
+    <form method="post">
+        <label for="isbn">ISBN:</label>
+        <input type="text" id="isbn" name="isbn" value="<?php echo isset($_GET['isbn']) ? htmlspecialchars($_GET['isbn']) : ''; ?>" />
+        <button type="submit" name="buscar_libro">Search</button>
+        <label for="id">ID:</label>
+        <?php if (!empty($results)) { ?>
+            <select name="id_libro">
+                <?php foreach ($results as $result) { ?>
+                    <option value="<?php echo $result['id']; ?>"><?php echo $result['title']; ?></option>
+                <?php } ?>
+            </select>
+        <?php } else { ?>
+            <!-- <input type="text" name="id_libro" placeholder="ID del libro"> -->
+            <select name="id_libro2">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            </select>
+        <?php } ?>
+        <br>
+        <h5>Nombre libro - Autor</h5>
+        <br>
+        <label for="Persona">Persona:</label>
+        <br>
+        <select name="tipo_documento">
+            <option value="CE">CC</option>
+            <option value="CC">CE</option>
+            <option value="PA">PA</option>
+            <option value="TI">TI</option>
+            <option value="PE">PE</option>
+        </select>
+        <input type="text" name="documento" placeholder="Número de documento">
+        <button type="submit" name="buscar_persona">Search</button>
+        <br>
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" placeholder="Nombre">
+        <br>
+        <label for="telefono">Teléfono:</label>
+        <input type="text" id="telefono" name="telefono" placeholder="Teléfono">
+        <br>
+        <label for="direccion">Dirección:</label>
+        <input type="text" id="direccion" name="direccion" placeholder="Dirección">
+        <br>
+        <label for="datepicker">Dia de retorno:</label>
+        <input type="text" id="datepicker" name="datepicker" placeholder="Select a date">
         <script>
-          const searchInputIsbn = document.getElementById('search-isbn');
-const searchInputName = document.getElementById('search-name');
-const searchInputAuthor = document.getElementById('search-author');
-
-
-          const tabla = document.getElementById('tabla-libros');
-
-
-          fetch('get-libros.php')
-              .then(response => response.json())
-              .then(data => {
-                  const filterAndRender = () => {
-                      const searchTermIsbn = searchInputIsbn.value;
-                      const searchTermName = searchInputName.value;
-                      const searchTermAuthor = searchInputAuthor.value;
-                      tabla.innerHTML = ''; // Limpiamos la tabla antes de agregar los nuevos resultados
-
-                      data.filter(libro => libro.isbn.includes(searchTermIsbn) && libro.nombre.includes(searchTermName) && libro.autor.includes(searchTermAuthor)).forEach(libro => {
-                          const fila = document.createElement('tr');
-                          fila.innerHTML = `<td>${libro.isbn}</td><td>${libro.nombre}</td><td>${libro.autor}</td><td>${libro.count}</td><td><button onclick="location.href='prestar-libro.php?isbn=${libro.isbn}'" class="btn btn-sm btn-outline-secondary">Prestar</button></td>`;
-                          tabla.appendChild(fila);
-                      });
-                  };
-
-                  searchInputIsbn.addEventListener('input', filterAndRender);
-                  searchInputName.addEventListener('input', filterAndRender);
-                  searchInputAuthor.addEventListener('input', filterAndRender);
-
-                  // Disparamos el evento input inicialmente para mostrar todos los libros
-                  searchInputIsbn.dispatchEvent(new Event('input'));
-              })
-              .catch(error => console.error('Error:', error));
-
-
-    </script>
-      </div>
+            $(function() {
+                $("#datepicker").datepicker();
+            });
+        </script>
+        <br>
+        <input type="submit" value="Prestar Libro">
+    </form>
+    </div>
     </main>
   </div>
 </div>

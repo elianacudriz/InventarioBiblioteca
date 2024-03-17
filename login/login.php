@@ -142,12 +142,12 @@
     <h1 class="h3 mb-2 fw-normal">Por favor ingrese al aplicativo</h1>
     <div class="form-floating">
         <label for="username">Nombre de usuario:</label><br><br>
-        <input class="form-control" type="text" id="username" name="Nombre de Usuario"><br>
+        <input class="form-control" type="text" id="username" name="username"><br>
     </div>
     
     <div class="form-floating">
     <label for="password">Contraseña:</label><br><br>
-    <input class="form-control" type="password" id="password" name="Contraseña"><br><br>
+    <input class="form-control" type="password" id="password" name="password"><br><br>
 </div>
     <input class="btn btn-primary w-100 py-2" type="submit" value="Iniciar sesión">
 </main>
