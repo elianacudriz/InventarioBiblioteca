@@ -6,29 +6,13 @@ if (!isset($_SESSION['username'])) {
     header("Location: ../index.php"); // Redirigir a la página de inicio si no hay sesión activa
     exit;
 }
+if (isset($_SESSION['mensaje'])) {
+  echo "<script>alert('" . $_SESSION['mensaje'] . "');</script>"; // Muestra el mensaje en un alert
+  unset($_SESSION['mensaje']); // Elimina el mensaje de la sesión para que no se vuelva a mostrar
+}
+
+$_SESSION['prestador']= null;
 ?>
-
-<!-- <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-</head>
-<body>
-<h1>Libros Disponibles</h1>
-    <ul id="lista-libros"></ul>
-
-    
-
- <form action="logout.php" method="post">
-        <input type="submit" value="Cerrar sesión">
-    </form>
-</body>
-</html> -->
-
-
-
 
 
 <!doctype html>
@@ -270,31 +254,31 @@ if (!isset($_SESSION['username'])) {
         <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="#">
+              <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="dashboard.php">
                 <svg class="bi"><use xlink:href="#house-fill"/></svg>
                 Dashboard
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
+              <a class="nav-link d-flex align-items-center gap-2" aria-current="page" href="ingresar-libro.php">
                 <svg class="bi"><use xlink:href="#file-earmark"/></svg>
                 Ingresar un libro
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
+              <a class="nav-link d-flex align-items-center gap-2" aria-current="page" href="prestar-libro.php">
                 <svg class="bi"><use xlink:href="#cart"/></svg>
                 Prestar un libro
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
+              <a class="nav-link d-flex align-items-center gap-2" aria-current="page" href="retornar-libro.php">
                 <svg class="bi"><use xlink:href="#people"/></svg>
                 Retornar un libro
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
+              <a class="nav-link d-flex align-items-center gap-2" aria-current="page" href="descontinuar-libro.php">
                 <svg class="bi"><use xlink:href="#graph-up"/></svg>
                 Descontinuar un libro
               </a>
@@ -311,10 +295,7 @@ if (!isset($_SESSION['username'])) {
               </a>
             </li>
             <li class="nav-item">
-            <!-- <form action="logout.php" method="post">
-                 <input type="submit" value="Cerrar sesión">
-             </form> -->
-              <a class="nav-link d-flex align-items-center gap-2" href="logout.php">
+              <a class="nav-link d-flex align-items-center gap-2" href="../../api/logout.php">
                 <svg class="bi"><use xlink:href="#door-closed"/></svg>
                 Sign out
               </a>
@@ -328,10 +309,10 @@ if (!isset($_SESSION['username'])) {
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Dashboard</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
-          <div class="btn-group me-2">
+          <!-- <div class="btn-group me-2">
             <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
             <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-          </div>
+          </div> -->
           <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1">
             <svg class="bi"><use xlink:href="#calendar3"/></svg>
             This week
@@ -386,7 +367,7 @@ const searchInputAuthor = document.getElementById('search-author');
           const tabla = document.getElementById('tabla-libros');
 
 
-          fetch('get-libros.php')
+          fetch('../../api/get-libros.php')
               .then(response => response.json())
               .then(data => {
                   const filterAndRender = () => {
@@ -418,7 +399,7 @@ const searchInputAuthor = document.getElementById('search-author');
   </div>
 </div>
 
-<script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+<script src="..controlador/assets/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script><script src="dashboard.js"></script></body>
 </html>
