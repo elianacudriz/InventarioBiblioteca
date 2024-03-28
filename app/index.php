@@ -1,36 +1,28 @@
-<!-- <form action="login.php" method="post">
-    <label for="username">Nombre de usuario:</label><br>
-    <input type="text" id="username" name="username"><br>
-    <label for="password">Contraseña:</label><br>
-    <input type="password" id="password" name="password"><br><br>
-    <input type="submit" value="Iniciar sesión">
-</form> -->
 <?php
     session_start();
     if(isset($_SESSION['username'])) {
-        header("Location: ../dashboard/dashboard.php");
+        header("Location: ./dashboard/dashboard.php");
         exit;
     }
     ?>
-
 <!doctype html>
-<html lang="en" data-bs-theme="auto">
-  <head><script src="../assets/js/color-modes.js"></script>
+<html lang="en" class="h-100" data-bs-theme="auto">
+  <head><script src="assets/js/color-modes.js"></script>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.122.0">
-    <title>Signin Template · Bootstrap v5.3</title>
+    <title>Cover Template · Bootstrap v5.3</title>
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/sign-in/">
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/cover/">
 
     
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
 
-<link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
       .bd-placeholder-img {
@@ -113,10 +105,10 @@
 
     
     <!-- Custom styles for this template -->
-    <link href="sign-in.css" rel="stylesheet">
+    <link href="cover.css" rel="stylesheet">
   </head>
-  <body class="d-flex align-items-center py-4 bg-body-tertiary">
-   
+  <body class="d-flex h-100 text-center text-bg-dark">
+    
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
       <symbol id="check2" viewBox="0 0 16 16">
         <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
@@ -132,26 +124,36 @@
         <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
       </symbol>
     </svg>
+
+    
+    
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+  <header class="mb-auto">
+    <div>
+    
+      <nav class="nav nav-masthead justify-content-center float-md-end">
+        <a class="nav-link fw-bold py-1 px-0 active" aria-current="page" href="#"></a>
+        <a class="nav-link fw-bold py-1 px-0" href="#"></a>
+      </nav>
       
-    
-    
-<main class="form-signin w-100 m-auto">
-  
-  <form action="signin.php" method="post">
-    <img src="logo_transparente.png" alt="BiblioApp" width="250" height="250">
-    <h1 class="h3 mb-2 fw-normal">Por favor ingrese al aplicativo</h1>
-    <div class="form-floating">
-        <label for="username">Nombre de usuario:</label><br><br>
-        <input class="form-control" type="text" id="username" name="username"><br>
     </div>
-    
-    <div class="form-floating">
-    <label for="password">Contraseña:</label><br><br>
-    <input class="form-control" type="password" id="password" name="password"><br><br>
+  </header>
+
+  
+  <main class="px-3">
+    <h1>Bienvenido a:</h1>
+    <img src="logo_transparent.png" alt="BiblioApp" width="280" height="280">
+    <a class="nav-link fw-bold py-1 px-0 active" aria-current="page" href="#">Sistema de gestión de prestamos bibliotecarios</a>
+      <p class="lead">
+      <a href="./login/login.php" class="btn btn-lg btn-light fw-bold border-white bg-white">Log in</a>
+    </p>
+  </main>
+
+  <footer class="mt-auto text-white-80">
+    <p>Página creada por el equipo de Gestión de Inventarios.</p>
+  </footer>
 </div>
-    <input class="btn btn-primary w-100 py-2" type="submit" value="Iniciar sesión">
-</main>
-<script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/dist/js/bootstrap.bundle.min.js"></script>
 
     </body>
 </html>

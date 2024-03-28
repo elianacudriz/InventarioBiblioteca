@@ -1,14 +1,50 @@
 <?php
 session_start();
 
-// Verificar si el usuario ha iniciado sesión
-if (!isset($_SESSION['username'])) {
-    header("Location: ../index.php"); // Redirigir a la página de inicio si no hay sesión activa
-    exit;
+$carrito = [];
+if (!$_SESSION['carrito']) {
+    $_SESSION['carrito'] = $carrito;
 }
+else{
+    $carrito = $_SESSION['carrito'];
+}
+
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+// Conexión a la base de datos (ajusta los parámetros según tu configuración)
+$servername = "localhost";
+$username_db = "root";
+$password_db = "";
+$database = "inventario";
+
+$conn = new mysqli($servername, $username_db, $password_db, $database);
+
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
+}
+
+
+
+$librosEncontrados = [];
+if (isset($_GET['isbn']) && !empty($_GET['isbn'])) {
+    $isbnBuscado = htmlspecialchars($_GET['isbn']);
+
+
+    $sql = "SELECT id, isbn, nombre, autor FROM libro WHERE isbn = '$isbnBuscado'";
+        $result = mysqli_query($conn, $sql);
+
+        // Si la consulta devuelve resultados, muestra las opciones en el menú desplegable
+        if (mysqli_num_rows($result) > 0) {
+          $librosEncontrados = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        }
+}
+
+
+
+// Aquí deberías tener la lógica para buscar el libro por ISBN y por número de documento del usuario
 ?>
-
-
 
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
@@ -113,10 +149,6 @@ if (!isset($_SESSION['username'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="dashboard.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-
   </head>
   <body>
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -222,7 +254,7 @@ if (!isset($_SESSION['username'])) {
 </svg>
 
 <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
-  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="/inventario/index.php">Company name</a>
+  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Company name</a>
 
   <ul class="navbar-nav flex-row d-md-none">
     <li class="nav-item text-nowrap">
@@ -253,31 +285,31 @@ if (!isset($_SESSION['username'])) {
         <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2 " href="/inventario/dashboard/dashboard.php">
+              <a class="nav-link d-flex align-items-center gap-2" aria-current="page" href="dashboard.php">
                 <svg class="bi"><use xlink:href="#house-fill"/></svg>
                 Dashboard
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
+              <a class="nav-link d-flex align-items-center gap-2" aria-current="page" href="ingresar-libro.php">
                 <svg class="bi"><use xlink:href="#file-earmark"/></svg>
                 Ingresar un libro
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="#">
+              <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="prestar-libro.php">
                 <svg class="bi"><use xlink:href="#cart"/></svg>
                 Prestar un libro
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
+              <a class="nav-link d-flex align-items-center gap-2" aria-current="page" href="retornar-libro.php">
                 <svg class="bi"><use xlink:href="#people"/></svg>
                 Retornar un libro
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
+              <a class="nav-link d-flex align-items-center gap-2" aria-current="page" href="descontinuar-libro.php">
                 <svg class="bi"><use xlink:href="#graph-up"/></svg>
                 Descontinuar un libro
               </a>
@@ -294,10 +326,7 @@ if (!isset($_SESSION['username'])) {
               </a>
             </li>
             <li class="nav-item">
-            <!-- <form action="logout.php" method="post">
-                 <input type="submit" value="Cerrar sesión">
-             </form> -->
-              <a class="nav-link d-flex align-items-center gap-2" href="logout.php">
+              <a class="nav-link d-flex align-items-center gap-2" href="../../api/logout.php">
                 <svg class="bi"><use xlink:href="#door-closed"/></svg>
                 Sign out
               </a>
@@ -309,81 +338,126 @@ if (!isset($_SESSION['username'])) {
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Dashboard</h1>
-        <div class="btn-toolbar mb-2 mb-md-0">
-          <div class="btn-group me-2">
-            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-          </div>
-          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1">
-            <svg class="bi"><use xlink:href="#calendar3"/></svg>
-            This week
-          </button>
-        </div>
+        <h1 class="h2">Prestar un libro</h1>
       </div>
-
-
-      <h2>Prestar Libro</h2>
-      <div>
-    <form method="post">
+<form method="GET">
         <label for="isbn">ISBN:</label>
-        <input type="text" id="isbn" name="isbn" value="<?php echo isset($_GET['isbn']) ? htmlspecialchars($_GET['isbn']) : ''; ?>" />
-        <button type="submit" name="buscar_libro">Search</button>
-        <label for="id">ID:</label>
-        <?php if (!empty($results)) { ?>
-            <select name="id_libro">
-                <?php foreach ($results as $result) { ?>
-                    <option value="<?php echo $result['id']; ?>"><?php echo $result['title']; ?></option>
-                <?php } ?>
-            </select>
-        <?php } else { ?>
-            <!-- <input type="text" name="id_libro" placeholder="ID del libro"> -->
-            <select name="id_libro2">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            </select>
-        <?php } ?>
-        <br>
-        <h5>Nombre libro - Autor</h5>
-        <br>
-        <label for="Persona">Persona:</label>
-        <br>
-        <select name="tipo_documento">
-            <option value="CE">CC</option>
-            <option value="CC">CE</option>
-            <option value="PA">PA</option>
-            <option value="TI">TI</option>
-            <option value="PE">PE</option>
-        </select>
-        <input type="text" name="documento" placeholder="Número de documento">
-        <button type="submit" name="buscar_persona">Search</button>
-        <br>
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" placeholder="Nombre">
-        <br>
-        <label for="telefono">Teléfono:</label>
-        <input type="text" id="telefono" name="telefono" placeholder="Teléfono">
-        <br>
-        <label for="direccion">Dirección:</label>
-        <input type="text" id="direccion" name="direccion" placeholder="Dirección">
-        <br>
-        <label for="datepicker">Dia de retorno:</label>
-        <input type="text" id="datepicker" name="datepicker" placeholder="Select a date">
-        <script>
-            $(function() {
-                $("#datepicker").datepicker();
-            });
-        </script>
-        <br>
-        <input type="submit" value="Prestar Libro">
+        <input type="text" id="isbn" name="isbn" value="<?php echo isset($_GET['isbn']) ? htmlspecialchars($_GET['isbn']) : ''; ?>" required>
+        <button type="submit">Buscar por ISBN</button>
     </form>
-    </div>
-    </main>
+
+    <form method="POST" action="../../api/manejar-carrito.php">
+    <?php if (!empty($librosEncontrados)): ?>
+        <select id="id_libro" name="id_libro">
+            <?php foreach ($librosEncontrados as $libro): ?>
+                <option value="<?= htmlspecialchars($libro['id']) ?>"><?= htmlspecialchars($libro['id']) ?></option>
+            <?php endforeach; ?>
+        </select>
+   
+    <?php endif; ?>
+    <input type="hidden" name="action" value="add">
+    <input type="hidden" name="isbn_libro" id="isbn_libro" value="<?= isset($librosEncontrados[0]['isbn']) ? htmlspecialchars($librosEncontrados[0]['isbn']) : '' ?>">
+    <input type="hidden" name="nombre_libro" id="nombre_libro" value="<?= isset($librosEncontrados[0]['nombre']) ? htmlspecialchars($librosEncontrados[0]['nombre']) : '' ?>">
+    <input type="hidden" name="autor_libro" id="autor_libro" value="<?= isset($librosEncontrados[0]['autor']) ? htmlspecialchars($librosEncontrados[0]['autor']) : '' ?>">
+    <button type="submit">Agregar Libro</button>
+</form>
+
+    <table id="libros">
+        <thead>
+            <tr>
+                <th>ISBN</th>
+                <th>ID Libro</th>
+                <th>Nombre</th>
+                <th>Autor</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($_SESSION['carrito'] as $indice => $libro): ?>
+                <tr>
+                    <td><?= htmlspecialchars($libro['isbn']) ?></td>
+                    <td><?= htmlspecialchars($libro['id']) ?></td>
+                    <td><?= htmlspecialchars($libro['nombre']) ?></td>
+                    <td><?= htmlspecialchars($libro['autor']) ?></td>
+                    <td>
+                    <form action="../../api/manejar-carrito.php" method="POST">
+                    <input type="hidden" name="action" value="remove">
+                    <input type="hidden" name="id" value="<?= htmlspecialchars($libro['id']) ?>">
+                    <input type="hidden" name="isbn" value="<?= htmlspecialchars($libro['isbn']) ?>">
+                    <button type="submit" class="eliminar">Eliminar</button>
+        </form>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    <form action="../../api/manejar-carrito.php" method="POST">
+                    <input type="hidden" name="action" value="clear">
+                    <button type="submit" class="eliminar">Limpiar tabla</button>
+        </form>
+    <h2>Información del Prestador</h2>
+    <?php if (!isset($_GET['prestador'])): ?>
+    <form id="buscarPrestador" method = "POST" action="../../api/post-prestador.php">
+    <select id="tipo_de_documento" name="tipo_de_documento">
+        <option value="CC">CC</option>
+        <option value="PA">PA</option>
+        <option value="CE">CE</option>
+        <option value="TI">TI</option>
+    </select>
+    <input type="text" id="documento" name="documento" placeholder="Número de documento" required>
+    <input type="submit" name="buscar_prestador" value="Buscar">
+    </form>
+
+<?php endif; ?>
+<?php  $prestador = $_SESSION['prestador']; ?>
+<?php if (isset($_GET['prestador']) && $_SESSION['prestador']==null ): ?>
+    <form id="formularioPrestador" method = "POST" action="../../api/manejar-prestamo.php">
+    <select id="tipo_de_documento" name="tipo_de_documento">
+        <option value="CC">CC</option>
+        <option value="PA">PA</option>
+        <option value="CE">CE</option>
+        <option value="TI">TI</option>
+    </select>
+    <input type="text" id="documento" name="documento" placeholder="Número de documento"  required >
+    <input type="text" id="nombre" name="nombre" placeholder="Nombre"  required>
+    <input type="text" id="telefono" name="telefono" placeholder="Teléfono"  required>
+    <input type="text" id="direccion" name="direccion" placeholder="Dirección"  required>
+    <input type="text" name="fecha_devolucion" id="fecha_devolucion" required>
+    <input type="submit" name = "procesar-prestamo-no" value="Enviar">
+</form>
+<?php endif; ?>
+<script>
+$(document).ready(function() {
+    $("#fecha_devolucion").datepicker({
+        dateFormat: "yy-mm-dd" // Formato de fecha, ajusta según necesites
+    });
+});
+</script>
+<?php if (isset($_GET['prestador']) && $_SESSION['prestador']!=null ): ?>
+    <form id="existePrestador"  method = "POST" action="../../api/manejar-prestamo.php">
+
+    <input type="text" id="tipo_de_documento" name="tipo_de_documento" placeholder="Número de documento" value="<?php echo $_SESSION['prestador']['tipo_de_documento']?>" readonly>
+    <input type="text" id="documento" name="documento" placeholder="Número de documento" value="<?php echo $_SESSION['prestador']['documento']?>" readonly>
+    <input type="text" id="nombre" name="nombre" placeholder="Nombre" value="<?php echo $_SESSION['prestador']['nombre']?>" readonly>
+    <input type="text" id="telefono" name="telefono" placeholder="Teléfono" value="<?php echo $_SESSION['prestador']['telefono']?>" readonly>
+    <input type="text" id="direccion" name="direccion" placeholder="Dirección" value="<?php echo $_SESSION['prestador']['direccion']?>" readonly>
+    <input type="text" name="fecha_devolucion" id="fecha_devolucion" required>
+    <input type="submit" name = "procesar-prestamo-existe" value="Enviar">
+</form>
+<?php endif; ?>
+<script>
+$(document).ready(function() {
+    $("#fecha_devolucion").datepicker({
+        dateFormat: "yy-mm-dd" // Formato de fecha, ajusta según necesites
+    });
+});
+</script>
+</body>
+</main>
   </div>
 </div>
 
-<script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+<script src="..controlador/assets/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script><script src="dashboard.js"></script></body>
 </html>
