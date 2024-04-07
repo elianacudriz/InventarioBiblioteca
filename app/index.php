@@ -146,6 +146,7 @@
     <a class="nav-link fw-bold py-1 px-0 active" aria-current="page" href="#">Sistema de gestión de prestamos bibliotecarios</a>
       <p class="lead">
       <a href="./login/login.php" class="btn btn-lg btn-light fw-bold border-white bg-white">Log in</a>
+      <a href="./dashboard/register.php" class="btn btn-lg btn-primary fw-bold">Register</a>
     </p>
   </main>
 

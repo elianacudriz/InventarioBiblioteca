@@ -11,7 +11,7 @@ if (!isset($_SESSION['username'])) {
 
 include "../modelo/conexion.php";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar-ingreso-libro'])) {
     $isbn = $_POST['isbn'];
     $nombre = $_POST['nombre'];
     $autor = $_POST['autor'];
@@ -25,6 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "<script>alert('Error al ingresar el libro.')</script>";
     } else {
         echo "<script>alert('Libro ingresado con éxito.')</script>";
+        header("Location: ../app/dashboard/dashboard.php"); 
     }
 }
 

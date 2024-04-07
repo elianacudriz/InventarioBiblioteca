@@ -17,11 +17,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar-prestamo-exis
 
     $stmt = $conexion->prepare("INSERT INTO ticket (prestador_tipo_de_documento, prestador_documento, fecha_prestamo, fecha_devolucion, estado) VALUES (?, ?, NOW(), ?, 1)");
     $stmt->bind_param("sss", $prestador['tipo_de_documento'], $prestador['documento'], $fecha_devolucion);
+    $stmt->execute();
+    $ticket_id = $conexion->insert_id;
 
     foreach ($carrito as $libro) {
-        $stmt->execute();
-        $ticket_id = $conexion->insert_id;
-
         $stmt2 = $conexion->prepare("INSERT INTO ticket_libro (ticket_id, libro_id, libro_isbn) VALUES (?, ?, ?)");
         $stmt2->bind_param("iss", $ticket_id, $libro['id'], $libro['isbn']);
         $stmt2->execute();
@@ -32,13 +31,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar-prestamo-exis
     }
 
     if ($stmt->errno || $stmt2->errno || $stmt3->errno) {
-        echo "<script>alert('Error intentando crear el prestamo del libto intente de nuevo.')</script>";
+        echo "<script>alert('Error intentando crear el prestamo del libro. Intente de nuevo.')</script>";
         header("Location: ../app/dashboard/dashboard.php");  
-          } 
-          else {
-                     $_SESSION['mensaje'] = "Préstamo realizado con éxito. Libro: {$libro['nombre']}, ID del ticket: {$ticket_id}, con fecha de retorno: {$fecha_devolucion}.";
-                     header("Location: ../app/dashboard/dashboard.php");  
-               } 
+    } else {
+        $_SESSION['mensaje'] = "Préstamo realizado con éxito. ID del ticket: {$ticket_id}, con fecha de retorno: {$fecha_devolucion}.";
+        header("Location: ../app/dashboard/dashboard.php");  
+    } 
+
     // Vaciar el carrito después de procesar todos los libros
     $_SESSION['carrito'] = [];
 }
@@ -59,12 +58,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar-prestamo-no']
     $fecha_devolucion = $_POST['fecha_devolucion'];
 
     $stmt = $conexion->prepare("INSERT INTO ticket (prestador_tipo_de_documento, prestador_documento, fecha_prestamo, fecha_devolucion, estado) VALUES (?, ?, NOW(), ?, 1)");
-    $stmt->bind_param("sss", $tipo_de_documento, $documento, $fecha_devolucion);
+    $stmt->bind_param("sss", $prestador['tipo_de_documento'], $prestador['documento'], $fecha_devolucion);
+    $stmt->execute();
+    $ticket_id = $conexion->insert_id;
 
     foreach ($carrito as $libro) {
-        $stmt->execute();
-        $ticket_id = $conexion->insert_id;
-
         $stmt2 = $conexion->prepare("INSERT INTO ticket_libro (ticket_id, libro_id, libro_isbn) VALUES (?, ?, ?)");
         $stmt2->bind_param("iss", $ticket_id, $libro['id'], $libro['isbn']);
         $stmt2->execute();
@@ -74,13 +72,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar-prestamo-no']
         $stmt3->execute();
     }
 
-    if ($stmt0->errno || $stmt->errno || $stmt2->errno || $stmt3->errno) {
+    if ($stmt->errno || $stmt2->errno || $stmt3->errno) {
         echo "<script>alert('Error intentando crear el prestamo del libro. Intente de nuevo.')</script>";
         header("Location: ../app/dashboard/dashboard.php");  
     } else {
-        $_SESSION['mensaje'] = "Préstamo realizado con éxito. Libro: {$libro['nombre']}, ID del ticket: {$ticket_id}, con fecha de retorno: {$fecha_devolucion}.";
+        $_SESSION['mensaje'] = "Préstamo realizado con éxito. ID del ticket: {$ticket_id}, con fecha de retorno: {$fecha_devolucion}.";
         header("Location: ../app/dashboard/dashboard.php");  
-    }
+    } 
 
     // Vaciar el carrito después de procesar todos los libros
     $_SESSION['carrito'] = [];
