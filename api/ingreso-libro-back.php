@@ -23,6 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar-ingreso-libro
 
     if ($stmt->errno) {
         echo "<script>alert('Error al ingresar el libro.')</script>";
+        header("Location: ../app/dashboard/dashboard.php");
     } else {
         echo "<script>alert('Libro ingresado con éxito.')</script>";
         header("Location: ../app/dashboard/dashboard.php"); 
