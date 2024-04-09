@@ -1,14 +1,14 @@
 <?php
 session_start();
 
-// Verificar si el usuario ha iniciado sesión
+
 if (!isset($_SESSION['username'])) {
-    header("Location: ../index.php"); // Redirigir a la página de inicio si no hay sesión activa
+    header("Location: ../index.php"); 
     exit;
 }
 if (isset($_SESSION['mensaje'])) {
-  echo "<script>alert('" . $_SESSION['mensaje'] . "');</script>"; // Muestra el mensaje en un alert
-  unset($_SESSION['mensaje']); // Elimina el mensaje de la sesión para que no se vuelva a mostrar
+  echo "<script>alert('" . $_SESSION['mensaje'] . "');</script>"; 
+  unset($_SESSION['mensaje']); 
 }
 
 $_SESSION['prestador']= null;

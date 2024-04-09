@@ -28,6 +28,6 @@ if (mysqli_num_rows($result) > 0) {
     echo json_encode([]);
 }
 
-// Cerrar conexión
+
 $conexion->close();
 ?>
