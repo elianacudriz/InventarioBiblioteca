@@ -1,14 +1,13 @@
 
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 'On');
+
 
 session_start();
 
-// if (!isset($_SESSION['username'])) {
-//     header("Location: ../index.php"); // Redirigir a la página de inicio si no hay sesión activa
-//     exit;
-// }
+if (!isset($_SESSION['username'])) {
+    header("Location: ../app/index.php"); // Redirigir a la página de inicio si no hay sesión activa
+    exit;
+}
 
 include "../modelo/conexion.php";
 

@@ -1,5 +1,10 @@
 <?php
 session_start();
+
+if (!isset($_SESSION['username'])) {
+  header("Location: ../index.php"); // Redirigir a la página de inicio si no hay sesión activa
+  exit;
+}
 ?>
 
 <!DOCTYPE html>

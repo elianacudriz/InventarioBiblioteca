@@ -2,6 +2,11 @@
 
 session_start();
 
+if (!isset($_SESSION['username'])) {
+    header("Location: ../app/index.php"); // Redirigir a la página de inicio si no hay sesión activa
+    exit;
+}
+
 $carrito = [];
 if (!$_SESSION['carrito']) {
     $_SESSION['carrito'] = $carrito;
