@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar-prestamo-no']
     $fecha_devolucion = $_POST['fecha_devolucion'];
 
     $stmt = $conexion->prepare("INSERT INTO ticket (prestador_tipo_de_documento, prestador_documento, fecha_prestamo, fecha_devolucion, estado) VALUES (?, ?, NOW(), ?, 1)");
-    $stmt->bind_param("sss", $prestador['tipo_de_documento'], $prestador['documento'], $fecha_devolucion);
+    $stmt->bind_param("sss", $tipo_de_documento, $documento, $fecha_devolucion);
     $stmt->execute();
     $ticket_id = $conexion->insert_id;
 

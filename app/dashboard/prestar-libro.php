@@ -55,17 +55,119 @@ if (isset($_GET['isbn']) && !empty($_GET['isbn'])) {
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.122.0">
-    <title>Dashboard Template · Bootstrap v5.3</title>
+    <title>Prestar Libro</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/dashboard/">
 
-    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">    
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
 
-<link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <style>
+
+      /* Estilos para el contenedor principal */
+    #contenedor {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Estilos para los formularios */
+    form {
+        margin-bottom: 20px;
+    }
+
+    input[type="text"],
+    select {
+        width: 5%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button[type="submit"] {
+        padding: 8px 10px;
+        background-color: blue;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    form {
+        text-align: center; /* Centrar el formulario */
+    }
+
+    label {
+        display: center;
+        margin-bottom: 15px;
+        color: black; /* Cambiar el color del texto a azul */
+    }
+
+    input[type="text"] {
+        width: 300px; /* Ancho del campo de entrada */
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    button[type="submit"] {
+        padding: 10px 20px;
+        background-color: blue; /* Cambiar el color de fondo a azul */
+        color: white; /* Cambiar el color del texto a blanco */
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+    /* Estilos para los títulos */
+    h2 {
+        margin-top: 0;
+        color: #007bff;
+    }
+
+    h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+
+    /* Estilos para la tabla */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 10px;
+    }
+    th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    } /* Aqui termina estilos para la tabla */
+        
+       
       .bd-placeholder-img {
         font-size: 1.125rem;
         text-anchor: middle;
@@ -143,7 +245,7 @@ if (isset($_GET['isbn']) && !empty($_GET['isbn'])) {
         display: block !important;
       }
     </style>
-
+    
     
     <!-- Custom styles for this template -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -166,41 +268,6 @@ if (isset($_GET['isbn']) && !empty($_GET['isbn'])) {
         <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
       </symbol>
     </svg>
-
-    <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
-      <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
-              id="bd-theme"
-              type="button"
-              aria-expanded="false"
-              data-bs-toggle="dropdown"
-              aria-label="Toggle theme (auto)">
-        <svg class="bi my-1 theme-icon-active" width="1em" height="1em"><use href="#circle-half"></use></svg>
-        <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
-      </button>
-      <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
-        <li>
-          <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
-            <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#sun-fill"></use></svg>
-            Light
-            <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
-          </button>
-        </li>
-        <li>
-          <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
-            <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#moon-stars-fill"></use></svg>
-            Dark
-            <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
-          </button>
-        </li>
-        <li>
-          <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
-            <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#circle-half"></use></svg>
-            Auto
-            <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
-          </button>
-        </li>
-      </ul>
-    </div>
 
     
 <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -319,12 +386,7 @@ if (isset($_GET['isbn']) && !empty($_GET['isbn'])) {
           <hr class="my-3">
 
           <ul class="nav flex-column mb-auto">
-            <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
-                <svg class="bi"><use xlink:href="#gear-wide-connected"/></svg>
-                Settings
-              </a>
-            </li>
+            
             <li class="nav-item">
               <a class="nav-link d-flex align-items-center gap-2" href="../../api/logout.php">
                 <svg class="bi"><use xlink:href="#door-closed"/></svg>
@@ -340,7 +402,7 @@ if (isset($_GET['isbn']) && !empty($_GET['isbn'])) {
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Prestar un libro</h1>
       </div>
-<form method="GET">
+<form method="GET" class="col-5 mx-auto p-3">
         <label for="isbn">ISBN:</label>
         <input type="text" id="isbn" name="isbn" value="<?php echo isset($_GET['isbn']) ? htmlspecialchars($_GET['isbn']) : ''; ?>" required>
         <button type="submit">Buscar por ISBN</button>
@@ -348,8 +410,10 @@ if (isset($_GET['isbn']) && !empty($_GET['isbn'])) {
 
     <form method="POST" action="../../api/manejar-carrito.php">
     <?php if (!empty($librosEncontrados)): ?>
+      
         <select id="id_libro" name="id_libro">
             <?php foreach ($librosEncontrados as $libro): ?>
+              
                 <option value="<?= htmlspecialchars($libro['id']) ?>"><?= htmlspecialchars($libro['id']) ?></option>
             <?php endforeach; ?>
         </select>
@@ -362,7 +426,8 @@ if (isset($_GET['isbn']) && !empty($_GET['isbn'])) {
     <button type="submit">Agregar Libro</button>
 </form>
 
-    <table id="libros">
+<div class="table-responsive small">
+      <table id="libros" class="table table-striped table-sm">
         <thead>
             <tr>
                 <th>ISBN</th>
@@ -391,11 +456,12 @@ if (isset($_GET['isbn']) && !empty($_GET['isbn'])) {
             <?php endforeach; ?>
         </tbody>
     </table>
+    </div>
     <form action="../../api/manejar-carrito.php" method="POST">
                     <input type="hidden" name="action" value="clear">
                     <button type="submit" class="eliminar">Limpiar tabla</button>
         </form>
-    <h2>Información del Prestador</h2>
+        <h2>Información del Prestador</h2>
     <?php if (!isset($_GET['prestador'])): ?>
     <form id="buscarPrestador" method = "POST" action="../../api/post-prestador.php">
     <select id="tipo_de_documento" name="tipo_de_documento">
@@ -412,18 +478,28 @@ if (isset($_GET['isbn']) && !empty($_GET['isbn'])) {
 <?php  $prestador = $_SESSION['prestador']; ?>
 <?php if (isset($_GET['prestador']) && $_SESSION['prestador']==null ): ?>
     <form id="formularioPrestador" method = "POST" action="../../api/manejar-prestamo.php">
+    <label for="tipo_de_documento">Tipo de documento:</label>
     <select id="tipo_de_documento" name="tipo_de_documento">
         <option value="CC">CC</option>
         <option value="PA">PA</option>
         <option value="CE">CE</option>
         <option value="TI">TI</option>
     </select>
+
+    <label for="documento">Documento:</label>
     <input type="text" id="documento" name="documento" placeholder="Número de documento"  required >
+    <label for="nombre">nombre:</label>
     <input type="text" id="nombre" name="nombre" placeholder="Nombre"  required>
+    <label for="telefono">telefono:</label>
     <input type="text" id="telefono" name="telefono" placeholder="Teléfono"  required>
+    <label for="direccion">direccion:</label>
     <input type="text" id="direccion" name="direccion" placeholder="Dirección"  required>
-    <input type="text" id="fecha_devolucion" name="fecha_devolucion" required>
+    <label for="fecha_devolucion">fecha_devolucion:</label>
+    <input type="text" name="fecha_devolucion" id="fecha_devolucion" placeholder="Fecha de retorno" required>
     <input type="submit" name = "procesar-prestamo-no" value="Enviar">
+    <a type="button" class="btn btn-danger" name= "cancelar-retorno" href="prestar-libro.php">Cancelar</a>
+
+    
 </form>
 <?php endif; ?>
 <script>
@@ -436,13 +512,20 @@ $(document).ready(function() {
 <?php if (isset($_GET['prestador']) && $_SESSION['prestador']!=null ): ?>
     <form id="existePrestador"  method = "POST" action="../../api/manejar-prestamo.php">
 
+    <label for="tipo_de_documento">Tipo de documento:</label>
     <input type="text" id="tipo_de_documento" name="tipo_de_documento" placeholder="Número de documento" value="<?php echo $_SESSION['prestador']['tipo_de_documento']?>" readonly>
+    <label for="documento">Documento:</label>
     <input type="text" id="documento" name="documento" placeholder="Número de documento" value="<?php echo $_SESSION['prestador']['documento']?>" readonly>
+    <label for="nombre">nombre:</label>
     <input type="text" id="nombre" name="nombre" placeholder="Nombre" value="<?php echo $_SESSION['prestador']['nombre']?>" readonly>
+    <label for="telefono">telefono:</label>
     <input type="text" id="telefono" name="telefono" placeholder="Teléfono" value="<?php echo $_SESSION['prestador']['telefono']?>" readonly>
+    <label for="direccion">direccion:</label>
     <input type="text" id="direccion" name="direccion" placeholder="Dirección" value="<?php echo $_SESSION['prestador']['direccion']?>" readonly>
-    <input type="text" name="fecha_devolucion" id="fecha_devolucion" required>
+    <label for="fecha_devolucion">fecha_devolucion:</label>
+    <input type="text" name="fecha_devolucion" id="fecha_devolucion" placeholder="Fecha de retorno" required>
     <input type="submit" name = "procesar-prestamo-existe" value="Enviar">
+    <a type="button" class="btn btn-danger" name= "cancelar-retorno" href="prestar-libro.php">Cancelar</a>
 </form>
 <?php endif; ?>
 <script>

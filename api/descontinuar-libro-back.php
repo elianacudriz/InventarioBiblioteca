@@ -33,15 +33,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar-descontinuar-
             $stmt2->execute();
 
             if ($stmt2->errno) {
-                echo "<script>alert('Error al descontinuar el libro.')</script>";
+                $_SESSION['mensaje'] = "Error al descontinuar el libro";
                 header("Location: ../app/dashboard/dashboard.php");
             } else {
-                echo "<script>alert('El libro ha sido descontinuado exitosamente.')</script>";
+                $_SESSION['mensaje'] = "El libro ha sido descontinuado exitosamente";
                 header("Location: ../app/dashboard/dashboard.php");
             }
         }
     } else {
-        echo "<script>alert('No se encontró un libro con el ID o ISBN proporcionado.')</script>";
+        $_SESSION['mensaje'] = "No se encontró un libro con el ID o ISBN proporcionado";
         header("Location: ../app/dashboard/dashboard.php");
     }
 }

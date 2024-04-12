@@ -154,41 +154,6 @@ else{
       </symbol>
     </svg>
 
-    <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
-      <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
-              id="bd-theme"
-              type="button"
-              aria-expanded="false"
-              data-bs-toggle="dropdown"
-              aria-label="Toggle theme (auto)">
-        <svg class="bi my-1 theme-icon-active" width="1em" height="1em"><use href="#circle-half"></use></svg>
-        <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
-      </button>
-      <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
-        <li>
-          <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
-            <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#sun-fill"></use></svg>
-            Light
-            <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
-          </button>
-        </li>
-        <li>
-          <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="false">
-            <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#moon-stars-fill"></use></svg>
-            Dark
-            <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
-          </button>
-        </li>
-        <li>
-          <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto" aria-pressed="true">
-            <svg class="bi me-2 opacity-50" width="1em" height="1em"><use href="#circle-half"></use></svg>
-            Auto
-            <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
-          </button>
-        </li>
-      </ul>
-    </div>
-
     
 <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
   <symbol id="calendar3" viewBox="0 0 16 16">
@@ -284,7 +249,7 @@ else{
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" aria-current="page" href="prestar-libro.php">
+              <a class="nav-link d-flex align-items-center gap-2 " aria-current="page" href="prestar-libro.php">
                 <svg class="bi"><use xlink:href="#cart"/></svg>
                 Prestar un libro
               </a>
@@ -296,7 +261,7 @@ else{
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" aria-current="page" href="descontinuar-libro.php">
+              <a class="nav-link d-flex align-items-center gap-2 " aria-current="page" href="descontinuar-libro.php">
                 <svg class="bi"><use xlink:href="#graph-up"/></svg>
                 Descontinuar un libro
               </a>
@@ -306,12 +271,7 @@ else{
           <hr class="my-3">
 
           <ul class="nav flex-column mb-auto">
-            <li class="nav-item">
-              <a class="nav-link d-flex align-items-center gap-2" href="#">
-                <svg class="bi"><use xlink:href="#gear-wide-connected"/></svg>
-                Settings
-              </a>
-            </li>
+            
             <li class="nav-item">
               <a class="nav-link d-flex align-items-center gap-2" href="../../api/logout.php">
                 <svg class="bi"><use xlink:href="#door-closed"/></svg>
@@ -323,10 +283,12 @@ else{
       </div>
     </div>
 
-<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-<h1>Retornar Libro</h1>
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Retornar un libro</h1>
+      </div>
     
-    <form action="../../api/retorno-libro-prestado.php" method="POST" onsubmit="checkTicketId()">
+    <form action="../../api/retorno-libro-prestado.php" method="POST" onsubmit="checkTicketId()" class="col-5 mx-auto p-3">
         <label for="ticket_id">ID del Ticket:</label>
         <input type="text" id="ticket_id" name="ticket_id"><br><br>
 
@@ -336,7 +298,7 @@ else{
         <label for="libro_isbn">ISBN del Libro:</label>
         <input type="text" id="libro_isbn" name="libro_isbn" ><br><br>
         
-        <input type="submit" id="submit_button" value="Enviar">
+        <input type="submit"  class="btn btn-primary" id="submit_button" value="Enviar">
     </form>
     
     <br/>
@@ -349,51 +311,49 @@ else{
           <h3>Resultado:</h3>
         </div>
         <div class="row">
-            <div class="col-sm">
+            <div class="col-2">
                 <label>Ticket ID</label>
               </div>
-            <div class="col-sm">
+            <div class="col-sm d-flex flex-column align-items-start">
                 <label><?= htmlspecialchars($respuesta_retorno['ticket_id']); ?></label>
               </div>
         </div>
         <div class="row">
-            <div class="col-sm">
+            <div class="col-2">
                 <label>Documento</label>
               </div>
-            <div class="col-sm">
-               <label><?= htmlspecialchars($respuesta_retorno['tipo_de_documento']); ?></label>
-              </div>
-              <div class="col-sm">
-                  <label><?= htmlspecialchars($respuesta_retorno['documento']); ?></label>
+              <div class="col-sm d-flex flex-column align-items-start">
+                  <label><?= htmlspecialchars($respuesta_retorno['tipo_de_documento']); ?> <?= htmlspecialchars($respuesta_retorno['documento']); ?></label>
               </div>
         </div>
         <div class="row">
-            <div class="col-sm">
+            <div class="col-2">
                 <label>Nombre</label>
               </div>
-            <div class="col-sm">
+            <div class="col-sm d-flex flex-column align-items-start">
                 <label><?= htmlspecialchars($respuesta_retorno['nombre_prestador']); ?></label>
               </div>
         </div>
         <div class="row">
-            <div class="col-sm">
+            <div class="col-2">
                 <label>Fecha de devolucion</label>
               </div>
-            <div class="col-sm">
+            <div class="col-sm d-flex flex-column align-items-start">
                 <label><?= htmlspecialchars($respuesta_retorno['fecha_devolucion']); ?></label>
               </div>
         </div>
         <div class="row">
-            <div class="col-sm">
+            <div class="col-2">
                 <label>Total</label>
               </div>
-            <div class="col-sm">
+            <div class="col-sm d-flex flex-column align-items-start">
                 <label>$<?= htmlspecialchars($respuesta_retorno['valor']); ?></label>
               </div>
         </div>
       
     </div>
-    <table id="respuesta">
+    <div class="table-responsive small">
+      <table class="table table-striped table-sm" id="respuesta">
         <thead>
             <tr>
                 <th>ID</th>
@@ -414,9 +374,17 @@ else{
             <?php endforeach; ?>
         </tbody>
     </table>
+    </div>
+    <div class="row">
+      <div class="col">
     <form action="../../api/retorno-libro-prestado.php" method="POST">
-                    <button type="submit" class="actualizar" name= "actualizar-retorno">Actualizar</button>
+                    <button type="submit" class="btn btn-primary" name= "actualizar-retorno">Retornar</button>
                 </form>
+            </div>
+            <div class="col">
+                <a type="button" class="btn btn-danger" name= "cancelar-retorno" href="retornar-libro.php">Cancelar</a>
+            </div>
+            </div>
     <?php endif; ?>
 
     </body>

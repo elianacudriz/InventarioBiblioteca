@@ -15,72 +15,37 @@ include "../modelo/conexion.php";
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar-retorno-noticket'])) {
     $libro_id = $_POST['libro_id'];
     $libro_isbn = $_POST['libro_isbn'];
-    $fecha_retorno = new DateTime();
 
     // 1. Buscar en la tabla ticket_libro
-    $stmt = $conexion->prepare("SELECT ticket_id FROM ticket_libro WHERE libro_id = ? AND libro_isbn = ?");
+    $stmt = $conexion->prepare("SELECT ticket_libro.ticket_id FROM ticket_libro,ticket WHERE ticket_libro.libro_id = ? AND ticket_libro.libro_isbn = ? AND ticket_libro.ticket_id = ticket.id AND ticket.estado = 1");
     $stmt->bind_param("is", $libro_id, $libro_isbn);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
+    if($row === null){
+        $_SESSION['mensaje'] = "Error buscando el ticket. Intente de nuevo";
+        header("Location: ../app/dashboard/dashboard.php");
+        exit();
+       }
     $ticket_id = $row['ticket_id'];
 
-      // Buscar en la tabla ticket
-      $stmt2 = $conexion->prepare("SELECT nombre, ticket.fecha_devolucion, ticket.prestador_tipo_de_documento, ticket.prestador_documento FROM ticket, prestador WHERE ticket.id = ? and ticket.prestador_tipo_de_documento = prestador.tipo_de_documento and ticket.prestador_documento = prestador.documento");
-      $stmt2->bind_param("i", $ticket_id);
-      $stmt2->execute();
-      $result2 = $stmt2->get_result();
-      $row2 = $result2->fetch_assoc();
-      $fecha_devolucion = new DateTime($row2['fecha_devolucion']);
-      $prestador_tipo_de_documento = $row2['prestador_tipo_de_documento'];
-      $prestador_documento = $row2['prestador_documento'];
-      $nombre_prestador = $row2['nombre'];
-   
-      // 2. Calcular la diferencia de fechas
-      $interval = $fecha_devolucion->diff($fecha_retorno);
-      $dias_diferencia = $interval->format('%r%a'); // %r incluirá el signo "-" si es negativo
-   
-      $valor = 2000;
-      if ($dias_diferencia > 0) {
-          $valor += $dias_diferencia * 500;
-      }
-      
-      $qur = "SELECT libro.isbn, libro.id, libro.nombre, libro.autor from libro, ticket_libro where libro.id = ticket_libro.libro_id and libro.isbn = ticket_libro.libro_isbn and ticket_libro.ticket_id = ?";
-      $stmt = $conexion->prepare($qur);
-      $stmt->bind_param("i", $ticket_id);
-      $stmt->execute();
-      $result = $stmt->get_result();
-      $libros_prestados = $result->fetch_all(MYSQLI_ASSOC);
-   
-      $libros = $libros_prestados;
-   
-          $respuesta = [
-              'ticket_id' => $ticket_id,
-              'fecha_devolucion' => $fecha_devolucion->format('Y-m-d'),
-              'tipo_de_documento' => $prestador_tipo_de_documento,
-              'documento' => $prestador_documento,
-              'nombre_prestador' => $nombre_prestador,
-              'valor' => $valor,
-              'libros' => $libros
-          ];
-   
-          $jsonRespuesta =  json_encode($respuesta);
-   
-       if($prestador_documento === null){
-           echo json_encode(null);
-       }
-       else{
-           echo $jsonRespuesta;
-       }
-    
+    $valor = 2000;
+
+    retornarValoresTicket($ticket_id,$valor,$conexion);
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar-retorno-ticket'])) {
     $ticket_id = $_POST['ticket_id'];
-    $fecha_retorno = new DateTime();
+    $valor = 0;
 
+    retornarValoresTicket($ticket_id,$valor,$conexion);
+  
+    
+}
 
-   // Buscar en la tabla ticket
+function retornarValoresTicket($ticket_id,$valor,$conexion){
+     // Buscar en la tabla ticket
+   $fecha_retorno = new DateTime();
    $stmt2 = $conexion->prepare("SELECT nombre, ticket.fecha_devolucion, ticket.prestador_tipo_de_documento, ticket.prestador_documento FROM ticket, prestador WHERE ticket.id = ? and ticket.prestador_tipo_de_documento = prestador.tipo_de_documento and ticket.prestador_documento = prestador.documento AND ticket.estado = 1");
    $stmt2->bind_param("i", $ticket_id);
    $stmt2->execute();
@@ -101,7 +66,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar-retorno-ticke
    $interval = $fecha_devolucion->diff($fecha_retorno);
    $dias_diferencia = $interval->format('%r%a'); // %r incluirá el signo "-" si es negativo
 
-   $valor = 0;
    if ($dias_diferencia > 0) {
        $valor += $dias_diferencia * 500;
    }
@@ -135,7 +99,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar-retorno-ticke
         echo "<script>alert('Error intentando retornar libro. Intente de nuevo.')</script>";
         header("Location: ../app/dashboard/dashboard.php");  
     }
-    
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['actualizar-retorno'])) {
