@@ -1,10 +1,9 @@
 <?php
 session_start();
-error_reporting(E_ALL);
-ini_set('display_errors', 'On');
+
 
 if (!isset($_SESSION['username'])) {
-    header("Location: ../index.php"); // Redirigir a la página de inicio si no hay sesión activa
+    header("Location: ../app/index.php"); // Redirigir a la página de inicio si no hay sesión activa
     exit;
 }
 

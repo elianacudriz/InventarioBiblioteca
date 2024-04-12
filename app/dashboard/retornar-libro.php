@@ -3,8 +3,8 @@ session_start();
 
 // Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION['username'])) {
-    header("Location: ../index.php"); 
-    exit;
+  header("Location: ../index.php"); // Redirigir a la página de inicio si no hay sesión activa
+  exit;
 }
 if (isset($_SESSION['mensaje'])) {
   echo "<script>alert('" . $_SESSION['mensaje'] . "');</script>"; 

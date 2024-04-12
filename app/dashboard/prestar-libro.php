@@ -1,6 +1,11 @@
 <?php
 session_start();
 
+if (!isset($_SESSION['username'])) {
+  header("Location: ../index.php"); // Redirigir a la página de inicio si no hay sesión activa
+  exit;
+}
+
 $carrito = [];
 if (!$_SESSION['carrito']) {
     $_SESSION['carrito'] = $carrito;
@@ -10,9 +15,9 @@ else{
 }
 
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 // Conexión a la base de datos (ajusta los parámetros según tu configuración)
 $servername = "localhost";
 $username_db = "root";
@@ -475,7 +480,7 @@ if (isset($_GET['isbn']) && !empty($_GET['isbn'])) {
     </form>
 
 <?php endif; ?>
-<?php  $prestador = $_SESSION['prestador']; ?>
+
 <?php if (isset($_GET['prestador']) && $_SESSION['prestador']==null ): ?>
     <form id="formularioPrestador" method = "POST" action="../../api/manejar-prestamo.php">
     <label for="tipo_de_documento">Tipo de documento:</label>
