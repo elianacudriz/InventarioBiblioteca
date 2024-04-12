@@ -1,7 +1,7 @@
 
 <?php
-// error_reporting(E_ALL);
-// ini_set('display_errors', 'On');
+error_reporting(E_ALL);
+ini_set('display_errors', 'On');
 
 session_start();
 
@@ -81,15 +81,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar-retorno-ticke
 
 
    // Buscar en la tabla ticket
-   $stmt2 = $conexion->prepare("SELECT nombre, ticket.fecha_devolucion, ticket.prestador_tipo_de_documento, ticket.prestador_documento FROM ticket, prestador WHERE ticket.id = ? and ticket.prestador_tipo_de_documento = prestador.tipo_de_documento and ticket.prestador_documento = prestador.documento");
+   $stmt2 = $conexion->prepare("SELECT nombre, ticket.fecha_devolucion, ticket.prestador_tipo_de_documento, ticket.prestador_documento FROM ticket, prestador WHERE ticket.id = ? and ticket.prestador_tipo_de_documento = prestador.tipo_de_documento and ticket.prestador_documento = prestador.documento AND ticket.estado = 1");
    $stmt2->bind_param("i", $ticket_id);
    $stmt2->execute();
    $result2 = $stmt2->get_result();
    $row2 = $result2->fetch_assoc();
+   if($row2 === null){
+    $_SESSION['mensaje'] = "Error buscando el ticket. Intente de nuevo";
+    header("Location: ../app/dashboard/dashboard.php");
+    exit();
+   }
    $fecha_devolucion = new DateTime($row2['fecha_devolucion']);
    $prestador_tipo_de_documento = $row2['prestador_tipo_de_documento'];
    $prestador_documento = $row2['prestador_documento'];
    $nombre_prestador = $row2['nombre'];
+   
 
    // 2. Calcular la diferencia de fechas
    $interval = $fecha_devolucion->diff($fecha_retorno);
@@ -109,7 +115,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar-retorno-ticke
 
    $libros = $libros_prestados;
 
-       $respuesta = [
+       $respuesta_retorno= [
            'ticket_id' => $ticket_id,
            'fecha_devolucion' => $fecha_devolucion->format('Y-m-d'),
            'tipo_de_documento' => $prestador_tipo_de_documento,
@@ -119,15 +125,68 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['procesar-retorno-ticke
            'libros' => $libros
        ];
 
-       $jsonRespuesta =  json_encode($respuesta);
+       $_SESSION['respuesta_retorno'] = $respuesta_retorno;
+       #$jsonRespuesta =  json_encode($respuesta);
 
-    if($prestador_documento === null){
-        echo json_encode(null);
+       if($respuesta_retorno !== null){
+        header("Location: ../app/dashboard/retornar-libro.php?ticket=true");
     }
     else{
-        echo $jsonRespuesta;
+        echo "<script>alert('Error intentando retornar libro. Intente de nuevo.')</script>";
+        header("Location: ../app/dashboard/dashboard.php");  
     }
     
 }
 
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['actualizar-retorno'])) {
+    if (!isset($_SESSION['respuesta_retorno'])) {
+        $_SESSION['error'] = 'Error al actualizar el ticket.';
+        header("Location: ../app/dashboard/error.php");
+    exit;
+}
+    // Asegúrate de validar y/o sanear estos valores antes de usarlos
+    $fecha_retorno = new DateTime();
+    $valor = $_SESSION['respuesta_retorno']['valor'];
+    $ticket_id = $_SESSION['respuesta_retorno']['ticket_id'];
+    $libros = $_SESSION['respuesta_retorno']['libros'];
+
+    if (!actualizarTicket($conexion, $fecha_retorno, $valor, $ticket_id,$libros)) {
+        $_SESSION['error'] = 'Error al actualizar el ticket.';
+    
+    // Redirigir al usuario a una página de error
+        header("Location: ../app/dashboard/error.php");
+    exit();
+    }
+    else{
+        $_SESSION['respuesta_retorno'] = [];
+        $_SESSION['mensaje'] = "Libro retornado con éxito. ID del ticket: {$ticket_id}, con fecha de retorno: {$fecha_retorno->format('Y-m-d')}.";
+        header("Location: ../app/dashboard/dashboard.php");
+    
+    }
+}
+
+function actualizarTicket($conexion, $fecha_retorno, $valor, $ticket_id,$libros) {
+    $fecha_string = $fecha_retorno->format('Y-m-d');
+    $stmt4 = $conexion->prepare("UPDATE ticket SET fecha_retorno = ?, valor = ?, estado = 0 WHERE id = ?");
+    $stmt4->bind_param("sii",$fecha_string, $valor, $ticket_id);
+    $stmt4->execute();
+
+    if ($stmt4->errno) {
+        echo json_encode(['error' => 'Error al actualizar el ticket.']);
+        return false;
+    }
+
+    foreach ($libros as $libro) {
+        $stmt5 = $conexion->prepare("UPDATE libro SET estado = 1 WHERE id = ? and isbn = ?");
+        $stmt5->bind_param("is", $libro['id'], $libro['isbn']);
+        $stmt5->execute();
+        if ($stmt5->errno) {
+            $mensaje = "Error al actualizar el libro {$libro['id']}:{$libro['isbn']}.";
+            echo json_encode(['error' => $mensaje]);
+            return false;
+        }
+    }
+
+    return true;
+}
 ?>

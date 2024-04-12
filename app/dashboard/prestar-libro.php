@@ -422,7 +422,7 @@ if (isset($_GET['isbn']) && !empty($_GET['isbn'])) {
     <input type="text" id="nombre" name="nombre" placeholder="Nombre"  required>
     <input type="text" id="telefono" name="telefono" placeholder="Teléfono"  required>
     <input type="text" id="direccion" name="direccion" placeholder="Dirección"  required>
-    <input type="text" name="fecha_devolucion" id="fecha_devolucion" required>
+    <input type="text" id="fecha_devolucion" name="fecha_devolucion" required>
     <input type="submit" name = "procesar-prestamo-no" value="Enviar">
 </form>
 <?php endif; ?>

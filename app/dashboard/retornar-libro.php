@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-
+// Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION['username'])) {
     header("Location: ../index.php"); 
     exit;
@@ -10,8 +10,16 @@ if (isset($_SESSION['mensaje'])) {
   echo "<script>alert('" . $_SESSION['mensaje'] . "');</script>"; 
   unset($_SESSION['mensaje']); 
 }
-
-$_SESSION['prestador']= null;
+$respuesta_retorno = [];
+if (!$_SESSION['respuesta_retorno']) {
+    $_SESSION['respuesta_retorno'] = $respuesta_retorno;
+}
+else{
+  if(isset($_GET['ticket'])){
+    $respuesta_retorno = $_SESSION['respuesta_retorno'];
+  }
+    
+}
 ?>
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
@@ -116,6 +124,18 @@ $_SESSION['prestador']= null;
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="dashboard.css" rel="stylesheet">
+    <script>
+        function checkTicketId() {
+            var ticketId = document.getElementById("ticket_id").value;
+            var submitButton = document.getElementById("submit_button");
+
+            if (ticketId) {
+                submitButton.name = "procesar-retorno-ticket";
+            } else {
+                submitButton.name = "procesar-retorno-noticket";
+            }
+        }
+    </script>
   </head>
   <body>
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -302,37 +322,8 @@ $_SESSION['prestador']= null;
         </div>
       </div>
     </div>
-<head>
-    <title>Retornar Libro</title>
-    <script>
-        function checkTicketId() {
-            var ticketId = document.getElementById("ticket_id").value;
-            var submitButton = document.getElementById("submit_button");
 
-            if (ticketId) {
-                submitButton.name = "procesar-retorno-ticket";
-            } else {
-                submitButton.name = "procesar-retorno-noticket";
-            }
-        }
-        $(document).ready(function(){
-            $("form").on("submit", function(event){
-                event.preventDefault();
-
-                $.ajax({
-                    url: "../../api/retorno-libro-prestado.php",
-                    type: "post",
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        var data = JSON.parse(response);
-                        $("#response").html("<p>ID del Ticket: " + data.ticket_id + "</p><p>ID del Libro: " + data.libro_id + "</p><p>ISBN del Libro: " + data.libro_isbn + "</p>");
-                    }
-                });
-            });
-        });
-    </script>
-</head>
-<body>
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 <h1>Retornar Libro</h1>
     
     <form action="../../api/retorno-libro-prestado.php" method="POST" onsubmit="checkTicketId()">
@@ -347,8 +338,93 @@ $_SESSION['prestador']= null;
         
         <input type="submit" id="submit_button" value="Enviar">
     </form>
-</body>
+    
+    <br/>
+
+    <?php if (isset($_GET['ticket'])): ?>
+      <div class="container">
+
+
+        <div class="row">
+          <h3>Resultado:</h3>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <label>Ticket ID</label>
+              </div>
+            <div class="col-sm">
+                <label><?= htmlspecialchars($respuesta_retorno['ticket_id']); ?></label>
+              </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <label>Documento</label>
+              </div>
+            <div class="col-sm">
+               <label><?= htmlspecialchars($respuesta_retorno['tipo_de_documento']); ?></label>
+              </div>
+              <div class="col-sm">
+                  <label><?= htmlspecialchars($respuesta_retorno['documento']); ?></label>
+              </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <label>Nombre</label>
+              </div>
+            <div class="col-sm">
+                <label><?= htmlspecialchars($respuesta_retorno['nombre_prestador']); ?></label>
+              </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <label>Fecha de devolucion</label>
+              </div>
+            <div class="col-sm">
+                <label><?= htmlspecialchars($respuesta_retorno['fecha_devolucion']); ?></label>
+              </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <label>Total</label>
+              </div>
+            <div class="col-sm">
+                <label>$<?= htmlspecialchars($respuesta_retorno['valor']); ?></label>
+              </div>
+        </div>
+      
+    </div>
+    <table id="respuesta">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>ISBN</th>
+                <th>Nombre</th>
+                <th>Autor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($respuesta_retorno['libros'] as $indice => $respuesta): ?>
+                <tr>
+                    <td><?= htmlspecialchars($respuesta['id']) ?></td>
+                    <td><?= htmlspecialchars($respuesta['isbn']) ?></td>
+                    <td><?= htmlspecialchars($respuesta['nombre']) ?></td>
+                    <td><?= htmlspecialchars($respuesta['autor']) ?></td>
+
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    <form action="../../api/retorno-libro-prestado.php" method="POST">
+                    <button type="submit" class="actualizar" name= "actualizar-retorno">Actualizar</button>
+                </form>
+    <?php endif; ?>
+
+    </body>
+</main>
+  </div>
+</div>
+
 <script src="..controlador/assets/dist/js/bootstrap.bundle.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script><script src="dashboard.js"></script></body>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js" integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp" crossorigin="anonymous"></script><script src="dashboard.js"></script></body>
 </html>
