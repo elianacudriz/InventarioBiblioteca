@@ -8,7 +8,7 @@ if (!isset($_SESSION['username'])) {
 }
 
 $carrito = [];
-if (!$_SESSION['carrito']) {
+if (!isset($_SESSION['carrito'])) {
     $_SESSION['carrito'] = $carrito;
 }
 else{
