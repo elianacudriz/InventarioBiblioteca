@@ -7,7 +7,7 @@ if (!isset($_SESSION['username'])) {
 }
 
 $carrito = [];
-if (!$_SESSION['carrito']) {
+if (!isset($_SESSION['carrito'])) {
     $_SESSION['carrito'] = $carrito;
 }
 else{
@@ -37,7 +37,7 @@ if (isset($_GET['isbn']) && !empty($_GET['isbn'])) {
     $isbnBuscado = htmlspecialchars($_GET['isbn']);
 
 
-    $sql = "SELECT id, isbn, nombre, autor FROM libro WHERE isbn = '$isbnBuscado'";
+    $sql = "SELECT id, isbn, nombre, autor FROM libro WHERE isbn = '$isbnBuscado' and estado=1";
         $result = mysqli_query($conn, $sql);
 
         // Si la consulta devuelve resultados, muestra las opciones en el menú desplegable

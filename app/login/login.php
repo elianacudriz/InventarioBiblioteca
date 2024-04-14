@@ -131,7 +131,7 @@
     
 <main class="form-signin w-100 m-auto">
   
-  <form action="/inventario/api/signin.php" method="post">
+  <form action="../../api/signin.php" method="post">
     <img src="logo_transparente.png" alt="BiblioApp" width="250" height="250">
     <h1 class="h3 mb-2 fw-normal">Por favor ingrese al aplicativo</h1>
     <div class="form-floating">
